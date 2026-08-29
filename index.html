@@ -54,6 +54,7 @@
 </head>
 <body>
 
+<!-- Step 1: Login -->
 <div class="container" id="loginBox">
     <h2>Login</h2>
     <input type="text" id="username" placeholder="Username" required>
@@ -62,6 +63,7 @@
     <p id="loginError" style="color:red;"></p>
 </div>
 
+<!-- Step 2: Age Question (hidden initially) -->
 <div class="container" id="ageBox" style="display:none;">
     <h2>What's your age?</h2>
     <input type="number" id="age" placeholder="Enter 2-digit age" min="10" max="99" required>
@@ -69,9 +71,10 @@
     <p id="ageError" style="color:red;"></p>
 </div>
 
+<!-- Step 3: Celebration (hidden initially) -->
 <div id="celebrationBox" style="display:none;">
     <div class="celebration">
-        🎉 1st Stage of life is completed 🎉
+        🎉 1st stage of life completed happily 🎉
     </div>
 </div>
 
@@ -82,6 +85,7 @@ function checkLogin() {
     const error = document.getElementById("loginError");
 
     if (user === "cooper" && pass === "0309") {
+        // Hide login, show age question
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("ageBox").style.display = "block";
         error.textContent = "";
@@ -95,6 +99,7 @@ function checkAge() {
     const error = document.getElementById("ageError");
 
     if (/^\d{2}$/.test(age)) { // exactly 2 digits
+        // Hide age box, show celebration
         document.getElementById("ageBox").style.display = "none";
         document.getElementById("celebrationBox").style.display = "block";
         error.textContent = "";
