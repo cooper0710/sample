@@ -85,7 +85,6 @@ function checkLogin() {
     const error = document.getElementById("loginError");
 
     if (user === "cooper" && pass === "0309") {
-        // Hide login, show age question
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("ageBox").style.display = "block";
         error.textContent = "";
@@ -98,8 +97,7 @@ function checkAge() {
     const age = document.getElementById("age").value.trim();
     const error = document.getElementById("ageError");
 
-    if (/^\d{2}$/.test(age)) { // exactly 2 digits
-        // Hide age box, show celebration
+    if (/^\d{2}$/.test(age)) {
         document.getElementById("ageBox").style.display = "none";
         document.getElementById("celebrationBox").style.display = "block";
         error.textContent = "";
