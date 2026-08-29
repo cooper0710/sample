@@ -1,161 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Special Celebration Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #333;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Celebration</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #ec4899;
+      --accent-hover: #db2777;
+      --text: #f8fafc;
+    }
 
-        .card {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 320px;
-            text-align: center;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-        .hidden {
-            display: none !important;
-        }
+    .card {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      z-index: 10;
+    }
 
-        h2 {
-            margin-bottom: 20px;
-            color: #4a4a4a;
-        }
+    h2 {
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
+    .input-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
 
-        button, .btn-link {
-            width: 100%;
-            padding: 12px;
-            background-color: #764ba2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: background 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-sizing: border-box;
-        }
+    label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
 
-        button:hover, .btn-link:hover {
-            background-color: #5a377d;
-        }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #fff;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
 
-        .error {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 8px;
-        }
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
 
-        /* Celebration Screen Overlay */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            animation: flashLights 1s infinite alternate;
-        }
+    button, .video-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--accent);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      box-sizing: border-box;
+      margin-top: 0.5rem;
+    }
 
-        .modal-content {
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 300px;
-            box-shadow: 0 0 20px #fff;
-        }
+    button:hover, .video-btn:hover {
+      background-color: var(--accent-hover);
+    }
 
-        /* Flashing celebration lights effect */
-        @keyframes flashLights {
-            0% { background-color: rgba(118, 75, 162, 0.85); }
-            50% { background-color: rgba(230, 126, 34, 0.85); }
-            100% { background-color: rgba(46, 204, 113, 0.85); }
-        }
-    </style>
+    .error {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    /* Modal / Pop-up Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 16px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+      position: relative;
+      animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); }
+      to { transform: scale(1); }
+    }
+
+    /* Celebration Lights Effect */
+    .lights {
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      animation: flash 0.8s infinite alternate;
+    }
+
+    .light:nth-child(1) { background: #ff0055; animation-delay: 0.1s; }
+    .light:nth-child(2) { background: #00ffcc; animation-delay: 0.3s; }
+    .light:nth-child(3) { background: #ffcc00; animation-delay: 0.2s; }
+    .light:nth-child(4) { background: #ff00ff; animation-delay: 0.4s; }
+    .light:nth-child(5) { background: #00ff00; animation-delay: 0.15s; }
+
+    @keyframes flash {
+      from { opacity: 0.3; box-shadow: none; }
+      to { opacity: 1; box-shadow: 0 0 10px currentColor; }
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="login-step" class="card">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="checkLogin()">Sign In</button>
-        <div id="login-error" class="error"></div>
+  <div id="loginCard" class="card">
+    <h2>Login</h2>
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username">
     </div>
-
-    <div id="age-step" class="card hidden">
-        <h2>Welcome!</h2>
-        <p>What's her age?</p>
-        <input type="number" id="ageInput" placeholder="Enter age">
-        <button onclick="submitAge()">Submit</button>
-        <div id="age-error" class="error"></div>
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password">
     </div>
+    <button onclick="handleLogin()">Sign In</button>
+    <div id="loginError" class="error">Invalid username or password.</div>
+  </div>
 
-    <div id="celebration-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h2 id="celebration-text"></h2>
-            <a href="https://www.youtube.com" target="_blank" class="btn-link">Click Here</a>
-        </div>
+  <div id="ageCard" class="card hidden">
+    <h2>Security Question</h2>
+    <div class="input-group">
+      <label for="ageInput">What's her age?</label>
+      <input type="number" id="ageInput" placeholder="Enter her age">
     </div>
+    <button onclick="handleAgeSubmit()">Submit</button>
+    <div id="ageError" class="error">Please enter a valid age.</div>
+  </div>
 
-    <script>
-        function checkLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            const errorDiv = document.getElementById('login-error');
+  <div id="celebrationModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="lights">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+      </div>
+      <h1 style="color: #ec4899; margin-top: 10px;">🎉 Congratulations! 🎉</h1>
+      <p id="celebrationText" style="font-size: 1.2rem; line-height: 1.5; margin: 1.5rem 0;"></p>
+      
+      <a id="videoTab" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="video-btn">Click Here</a>
+    </div>
+  </div>
 
-            if (user === 'cooper' && pass === '0309') {
-                errorDiv.innerText = '';
-                document.getElementById('login-step').classList.add('hidden');
-                document.getElementById('age-step').classList.remove('hidden');
-            } else {
-                errorDiv.innerText = 'Invalid username or password.';
-            }
-        }
+  <script>
+    function handleLogin() {
+      const usernameInput = document.getElementById('username').value.trim();
+      const passwordInput = document.getElementById('password').value.trim();
+      const loginError = document.getElementById('loginError');
 
-        function submitAge() {
-            const age = document.getElementById('ageInput').value;
-            const errorDiv = document.getElementById('age-error');
+      if (usernameInput === 'cooper' && passwordInput === '0309') {
+        loginError.style.display = 'none';
+        document.getElementById('loginCard').classList.add('hidden');
+        document.getElementById('ageCard').classList.remove('hidden');
+      } else {
+        loginError.style.display = 'block';
+      }
+    }
 
-            if (age.trim() === '') {
-                errorDiv.innerText = 'Please enter an age.';
-                return;
-            }
+    function handleAgeSubmit() {
+      const ageVal = document.getElementById('ageInput').value.trim();
+      const ageError = document.getElementById('ageError');
 
-            document.getElementById('celebration-text').innerText = 
-                `Congratulations! You are happily ${age}`;
-            
-            document.getElementById('age-step').classList.add('hidden');
-            document.getElementById('celebration-modal').classList.remove('hidden');
-        }
-    </script>
+      if (ageVal !== '' && !isNaN(ageVal) && Number(ageVal) > 0) {
+        ageError.style.display = 'none';
+        
+        // Update popup message dynamically
+        const celebrationText = document.getElementById('celebrationText');
+        celebrationText.textContent = `You are happily ${ageVal}!`;
+
+        // Show celebration popup
+        document.getElementById('celebrationModal').classList.add('active');
+      } else {
+        ageError.style.display = 'block';
+      }
+    }
+  </script>
 </body>
 </html>
