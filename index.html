@@ -165,8 +165,54 @@
       to { opacity: 1; box-shadow: 0 0 10px currentColor; }
     }
 
+    /* Message Display Card */
+    .message-card {
+      background: var(--card-bg);
+      padding: 3rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: left;
+      z-index: 10;
+    }
+
+    .message-container {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      min-height: 200px;
+      color: #f8fafc;
+    }
+
+    .message-line {
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .message-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.2rem;
+      background-color: var(--accent);
+      margin-left: 4px;
+      animation: blink 0.7s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     .hidden {
-      display: none;
+      display: none !important;
     }
   </style>
 </head>
@@ -208,11 +254,23 @@
       <h1 style="color: #ec4899; margin-top: 10px;">🎉 Congratulations! 🎉</h1>
       <p id="celebrationText" style="font-size: 1.2rem; line-height: 1.5; margin: 1.5rem 0;"></p>
       
-      <a id="videoTab" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="video-btn">Click Here</a>
+      <button onclick="openSpecialMessage()" class="video-btn">Click Here</button>
     </div>
   </div>
 
+  <div id="messageCard" class="message-card hidden">
+    <div id="messageContainer" class="message-container"></div>
+  </div>
+
   <script>
+    // EDIT YOUR CUSTOM LINES HERE:
+    const messages = [
+      "To the most special person...",
+      "Every single moment with you is a blessing.",
+      "Thank you for bringing so much light into my world.",
+      "Here's to celebrating you today and always. ❤️"
+    ];
+
     function handleLogin() {
       const usernameInput = document.getElementById('username').value.trim();
       const passwordInput = document.getElementById('password').value.trim();
@@ -234,15 +292,68 @@
       if (ageVal !== '' && !isNaN(ageVal) && Number(ageVal) > 0) {
         ageError.style.display = 'none';
         
-        // Update popup message dynamically
         const celebrationText = document.getElementById('celebrationText');
         celebrationText.textContent = `You are happily ${ageVal}!`;
 
-        // Show celebration popup
         document.getElementById('celebrationModal').classList.add('active');
       } else {
         ageError.style.display = 'block';
       }
+    }
+
+    function openSpecialMessage() {
+      // Hide the modal & age card
+      document.getElementById('celebrationModal').classList.remove('active');
+      document.getElementById('ageCard').classList.add('hidden');
+      
+      // Reveal the message card
+      const messageCard = document.getElementById('messageCard');
+      messageCard.classList.remove('hidden');
+
+      // Start the line-by-line typing animation
+      displayMessagesLineByLine(messages);
+    }
+
+    function displayMessagesLineByLine(lines) {
+      const container = document.getElementById('messageContainer');
+      container.innerHTML = ''; 
+
+      let currentLineIndex = 0;
+
+      function typeLine() {
+        if (currentLineIndex >= lines.length) return;
+
+        const lineText = lines[currentLineIndex];
+        const lineElement = document.createElement('div');
+        lineElement.className = 'message-line visible';
+        
+        const textSpan = document.createElement('span');
+        const cursorSpan = document.createElement('span');
+        cursorSpan.className = 'cursor';
+
+        lineElement.appendChild(textSpan);
+        lineElement.appendChild(cursorSpan);
+        container.appendChild(lineElement);
+
+        let charIndex = 0;
+
+        function typeChar() {
+          if (charIndex < lineText.length) {
+            textSpan.textContent += lineText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeChar, 50); // Speed of character typing (ms)
+          } else {
+            // Remove cursor from finished line
+            cursorSpan.remove();
+            currentLineIndex++;
+            setTimeout(typeLine, 800); // Pause time before starting the next line (ms)
+          }
+        }
+
+        typeChar();
+      }
+
+      typeLine();
     }
   </script>
 </body>
