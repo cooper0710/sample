@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* Login Card */
         .login-card {
             background-color: #2a2a2a;
             padding: 30px;
@@ -70,7 +69,7 @@
             background-color: #e03570;
         }
 
-        /* Overlay & Modal */
+        /* Overlay & Pop-up */
         .overlay {
             display: none;
             position: fixed;
@@ -91,7 +90,6 @@
             text-align: center;
             position: relative;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.5s ease-in-out;
         }
 
         .popup h1 {
@@ -100,7 +98,7 @@
             margin-bottom: 20px;
         }
 
-        /* Celebration Lights Effect */
+        /* Celebration Lights */
         .lights {
             display: flex;
             justify-content: center;
@@ -176,12 +174,27 @@
                 <div class="light"></div>
                 <div class="light"></div>
             </div>
-            <h1 id="congratsText">Congratulations! You are happily [Age]! 🎉</h1>
+            <h1 id="congratsText"></h1>
             <a href="https://www.youtube.com" target="_blank" class="video-btn">Click Here</a>
         </div>
     </div>
 
     <script>
+        // Set her birth year here (YYYY)
+        const birthYear = 2000; // Change 2000 to her actual birth year
+
+        function calculateAge(year) {
+            const today = new Date();
+            const birthDate = new Date(year, 2, 9); // Month is 0-indexed: 2 = March, 9 = Day 9
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -191,6 +204,13 @@
 
             if (user === 'cooper' && pass === '0309') {
                 errorMsg.style.display = 'none';
+                
+                // Calculate age dynamically
+                const herAge = calculateAge(birthYear);
+                
+                // Set the exact greeting text
+                document.getElementById('congratsText').textContent = `Congratulations you are happily ${herAge} 🎉`;
+                
                 document.getElementById('popupOverlay').style.display = 'flex';
             } else {
                 errorMsg.style.display = 'block';
