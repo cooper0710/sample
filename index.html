@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login & Age Check</title>
+<title>Multi-Step Login</title>
 <style>
     body {
         font-family: Arial, sans-serif;
-        background: #f4f4f4;
+        background-color: #f4f4f4;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
+        margin: 0;
     }
     .container {
         background: white;
@@ -28,7 +29,7 @@
         border-radius: 4px;
     }
     button {
-        padding: 8px 15px;
+        padding: 10px 15px;
         background: #28a745;
         color: white;
         border: none;
@@ -38,38 +39,39 @@
     button:hover {
         background: #218838;
     }
-    .hidden {
-        display: none;
-    }
-    .success {
-        color: green;
-        font-weight: bold;
+    .celebration {
+        font-size: 2em;
+        color: white;
+        background: #28a745;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
     }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Login Form -->
-    <div id="loginForm">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button onclick="checkLogin()">Login</button>
-        <p id="loginError" style="color:red;"></p>
-    </div>
+<div class="container" id="loginBox">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="checkLogin()">Login</button>
+    <p id="loginError" style="color:red;"></p>
+</div>
 
-    <!-- Age Form -->
-    <div id="ageForm" class="hidden">
-        <h2>What's your age?</h2>
-        <input type="number" id="age" placeholder="Enter age" required>
-        <button onclick="checkAge()">Submit</button>
-        <p id="ageError" style="color:red;"></p>
-    </div>
+<div class="container" id="ageBox" style="display:none;">
+    <h2>What's your age?</h2>
+    <input type="number" id="age" placeholder="Enter 2-digit age" min="10" max="99" required>
+    <button onclick="checkAge()">Submit</button>
+    <p id="ageError" style="color:red;"></p>
+</div>
 
-    <!-- Success Message -->
-    <div id="successMessage" class="hidden">
-        <h2 class="success">🎉 Successful First Stage! 🎉</h2>
+<div id="celebrationBox" style="display:none;">
+    <div class="celebration">
+        🎉 1st Stage of life is completed 🎉
     </div>
 </div>
 
@@ -80,8 +82,8 @@ function checkLogin() {
     const error = document.getElementById("loginError");
 
     if (user === "cooper" && pass === "0309") {
-        document.getElementById("loginForm").classList.add("hidden");
-        document.getElementById("ageForm").classList.remove("hidden");
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("ageBox").style.display = "block";
         error.textContent = "";
     } else {
         error.textContent = "Invalid username or password.";
@@ -92,12 +94,12 @@ function checkAge() {
     const age = document.getElementById("age").value.trim();
     const error = document.getElementById("ageError");
 
-    if (/^\d{2}$/.test(age)) { // Checks if exactly 2 digits
-        document.getElementById("ageForm").classList.add("hidden");
-        document.getElementById("successMessage").classList.remove("hidden");
+    if (/^\d{2}$/.test(age)) { // exactly 2 digits
+        document.getElementById("ageBox").style.display = "none";
+        document.getElementById("celebrationBox").style.display = "block";
         error.textContent = "";
     } else {
-        error.textContent = "Please enter a valid two-digit age.";
+        error.textContent = "Please enter a valid 2-digit age.";
     }
 }
 </script>
