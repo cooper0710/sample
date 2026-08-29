@@ -1,111 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Multi-Step Login</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
+      background: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-    .container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        width: 300px;
-        text-align: center;
+
+    .login-card {
+      background: #1e293b;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      color: #f8fafc;
     }
-    input {
-        width: 90%;
-        padding: 8px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+
+    .login-card h2 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #38bdf8;
     }
-    button {
-        padding: 10px 15px;
-        background: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+
+    .input-group {
+      margin-bottom: 1.25rem;
     }
-    button:hover {
-        background: #218838;
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
     }
-    .celebration {
-        font-size: 2em;
-        color: white;
-        background: #28a745;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
+
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      background: #0f172a;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
     }
-</style>
+
+    .input-group input:focus {
+      border-color: #38bdf8;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: #0369a1;
+    }
+
+    .error-msg {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      text-align: center;
+      display: none;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: #1e293b;
+      padding: 3rem;
+      border-radius: 16px;
+      text-align: center;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+      animation: pulseGlow 2s infinite alternate;
+      max-width: 90%;
+    }
+
+    .modal-content h1 {
+      color: #fbbf24;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .modal-content p {
+      color: #f8fafc;
+      font-size: 1.2rem;
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+      }
+      100% {
+        box-shadow: 0 0 40px rgba(236, 72, 153, 0.8), 0 0 60px rgba(56, 189, 248, 0.8);
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Step 1: Login -->
-<div class="container" id="loginBox">
+  <div class="login-card">
     <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button onclick="checkLogin()">Login</button>
-    <p id="loginError" style="color:red;"></p>
-</div>
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+      </div>
+      <button type="submit" class="btn-submit">Sign In</button>
+      <div id="errorMsg" class="error-msg">Invalid username or password</div>
+    </form>
+  </div>
 
-<!-- Step 2: Age Question (hidden initially) -->
-<div class="container" id="ageBox" style="display:none;">
-    <h2>What's your age?</h2>
-    <input type="number" id="age" placeholder="Enter 2-digit age" min="10" max="99" required>
-    <button onclick="checkAge()">Submit</button>
-    <p id="ageError" style="color:red;"></p>
-</div>
-
-<!-- Step 3: Celebration (hidden initially) -->
-<div id="celebrationBox" style="display:none;">
-    <div class="celebration">
-        🎉 1st stage of life completed happily 🎉
+  <div class="modal-overlay" id="celebrationModal">
+    <div class="modal-content">
+      <h1>🎉 Congratulations! 🎉</h1>
+      <p>You are happily logged in!</p>
     </div>
-</div>
+  </div>
 
-<script>
-function checkLogin() {
-    const user = document.getElementById("username").value.trim();
-    const pass = document.getElementById("password").value.trim();
-    const error = document.getElementById("loginError");
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const celebrationModal = document.getElementById('celebrationModal');
 
-    if (user === "cooper" && pass === "0309") {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("ageBox").style.display = "block";
-        error.textContent = "";
-    } else {
-        error.textContent = "Invalid username or password.";
-    }
-}
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
 
-function checkAge() {
-    const age = document.getElementById("age").value.trim();
-    const error = document.getElementById("ageError");
+      const usernameInput = document.getElementById('username').value.trim();
+      const passwordInput = document.getElementById('password').value;
 
-    if (/^\d{2}$/.test(age)) {
-        document.getElementById("ageBox").style.display = "none";
-        document.getElementById("celebrationBox").style.display = "block";
-        error.textContent = "";
-    } else {
-        error.textContent = "Please enter a valid 2-digit age.";
-    }
-}
-</script>
+      if (usernameInput === 'cooper' && passwordInput === '0309') {
+        errorMsg.style.display = 'none';
+        
+        // Show celebration popup
+        celebrationModal.classList.add('active');
 
-</body>
-</html>
+        // Trigger confetti bursts
+        triggerCelebration();
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    function triggerCelebration() {
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+      function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <=
