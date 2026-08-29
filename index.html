@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <title>Login</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,12 +14,15 @@
 
     body {
       background: #0f172a;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      overflow: hidden;
     }
 
+    /* Login Card */
     .login-card {
       background: #1e293b;
       padding: 2.5rem;
@@ -28,7 +30,7 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       width: 100%;
       max-width: 400px;
-      color: #f8fafc;
+      z-index: 10;
     }
 
     .login-card h2 {
@@ -38,7 +40,7 @@
     }
 
     .input-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.2rem;
     }
 
     .input-group label {
@@ -51,8 +53,8 @@
     .input-group input {
       width: 100%;
       padding: 0.75rem;
-      border: 1px solid #334155;
       border-radius: 6px;
+      border: 1px solid #334155;
       background: #0f172a;
       color: #fff;
       font-size: 1rem;
@@ -63,7 +65,7 @@
       border-color: #38bdf8;
     }
 
-    .btn-submit {
+    button {
       width: 100%;
       padding: 0.75rem;
       border: none;
@@ -76,19 +78,19 @@
       transition: background 0.2s;
     }
 
-    .btn-submit:hover {
+    button:hover {
       background: #0369a1;
     }
 
     .error-msg {
-      color: #f87171;
+      color: #ef4444;
       font-size: 0.85rem;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       text-align: center;
       display: none;
     }
 
-    /* Modal Styling */
+    /* Modal Popup */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -100,13 +102,14 @@
       justify-content: center;
       align-items: center;
       opacity: 0;
-      pointer-events: none;
+      visibility: hidden;
       transition: opacity 0.3s ease;
+      z-index: 100;
     }
 
     .modal-overlay.active {
       opacity: 1;
-      pointer-events: auto;
+      visibility: visible;
     }
 
     .modal-content {
@@ -114,93 +117,143 @@
       padding: 3rem;
       border-radius: 16px;
       text-align: center;
-      border: 2px solid #f59e0b;
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
-      animation: pulseGlow 2s infinite alternate;
-      max-width: 90%;
+      border: 2px solid #fbbf24;
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+      z-index: 101;
     }
 
     .modal-content h1 {
-      color: #fbbf24;
       font-size: 2rem;
-      margin-bottom: 1rem;
-      text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+      color: #f59e0b;
+      animation: glow 1.5s infinite alternate;
     }
 
-    .modal-content p {
-      color: #f8fafc;
-      font-size: 1.2rem;
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; }
+      to { text-shadow: 0 0 20px #fbbf24, 0 0 30px #fbbf24; }
     }
 
-    @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
-      }
-      100% {
-        box-shadow: 0 0 40px rgba(236, 72, 153, 0.8), 0 0 60px rgba(56, 189, 248, 0.8);
-      }
+    /* Celebration Lights Canvas */
+    #lightsCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+      display: none;
     }
   </style>
 </head>
 <body>
 
   <div class="login-card">
-    <h2>Login</h2>
+    <h2>Account Login</h2>
     <form id="loginForm">
       <div class="input-group">
         <label for="username">Username</label>
-        <input type="text" id="username" required autocomplete="off">
+        <input type="text" id="username" required>
       </div>
       <div class="input-group">
         <label for="password">Password</label>
         <input type="password" id="password" required>
       </div>
-      <button type="submit" class="btn-submit">Sign In</button>
-      <div id="errorMsg" class="error-msg">Invalid username or password</div>
+      <button type="submit">Log In</button>
+      <div class="error-msg" id="errorMsg">Invalid credentials. Please try again.</div>
     </form>
   </div>
 
-  <div class="modal-overlay" id="celebrationModal">
+  <div class="modal-overlay" id="successModal">
     <div class="modal-content">
-      <h1>🎉 Congratulations! 🎉</h1>
-      <p>You are happily logged in!</p>
+      <h1>Congratulations, you are happily logged in! 🎉</h1>
     </div>
   </div>
+
+  <canvas id="lightsCanvas"></canvas>
 
   <script>
     const loginForm = document.getElementById('loginForm');
     const errorMsg = document.getElementById('errorMsg');
-    const celebrationModal = document.getElementById('celebrationModal');
+    const successModal = document.getElementById('successModal');
+    const canvas = document.getElementById('lightsCanvas');
+    const ctx = canvas.getContext('2d');
 
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
 
-      const usernameInput = document.getElementById('username').value.trim();
-      const passwordInput = document.getElementById('password').value;
-
-      if (usernameInput === 'cooper' && passwordInput === '0309') {
+      if (user === 'cooper' && pass === '0309') {
         errorMsg.style.display = 'none';
-        
-        // Show celebration popup
-        celebrationModal.classList.add('active');
-
-        // Trigger confetti bursts
-        triggerCelebration();
+        successModal.classList.add('active');
+        startCelebrationLights();
       } else {
         errorMsg.style.display = 'block';
       }
     });
 
-    function triggerCelebration() {
-      const duration = 3 * 1000;
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+    /* Particle Celebration Lights System */
+    let particles = [];
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
-      function randomInRange(min, max) {
-        return Math.random() * (max - min) + min;
+    window.addEventListener('resize', resizeCanvas);
+
+    function startCelebrationLights() {
+      canvas.style.display = 'block';
+      resizeCanvas();
+      
+      const colors = ['#f59e0b', '#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#facc15'];
+      
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 4 + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          alpha: Math.random(),
+          glowing: Math.random() > 0.5
+        });
       }
+      
+      animateLights();
+    }
 
-      const interval = setInterval(function() {
-        const timeLeft = animationEnd - Date.now();
+    function animateLights() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (timeLeft <=
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        if (p.glowing) {
+          p.alpha += 0.02;
+          if (p.alpha >= 1) p.glowing = false;
+        } else {
+          p.alpha -= 0.02;
+          if (p.alpha <= 0.2) p.glowing = true;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animateLights);
+    }
+  </script>
+</body>
+</html>
