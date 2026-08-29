@@ -1,221 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Experience</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      width: 320px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+    }
+    .input-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      color: #cbd5e1;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.2);
+      color: #fff;
+      outline: none;
+    }
+    input:focus {
+      border-color: #38bdf8;
+    }
+    button, .link-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button:hover, .link-btn:hover {
+      background: #7dd3fc;
+    }
+    .error {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .hidden {
+      display: none !important;
+    }
 
-        body {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
+    /* Celebration Lights Overlay */
+    #celebration-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .popup {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      padding: 2.5rem;
+      border-radius: 20px;
+      border: 2px solid #facc15;
+      box-shadow: 0 0 30px #facc15;
+      text-align: center;
+      max-width: 90%;
+      animation: pop 0.4s ease-out;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .lights {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+    }
+    .light {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      animation: flash 1s infinite alternate;
+    }
+    .light:nth-child(1) { background: #ff0055; animation-delay: 0s; }
+    .light:nth-child(2) { background: #00ffcc; animation-delay: 0.2s; }
+    .light:nth-child(3) { background: #ffe600; animation-delay: 0.4s; }
+    .light:nth-child(4) { background: #ff00ff; animation-delay: 0.6s; }
+    .light:nth-child(5) { background: #00ff00; animation-delay: 0.8s; }
 
-        .login-card {
-            background-color: #2a2a2a;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            width: 300px;
-            text-align: center;
-        }
-
-        .login-card h2 {
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: #fff;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #ff4081;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #e03570;
-        }
-
-        /* Overlay & Pop-up */
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .popup {
-            background: #222;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-        }
-
-        .popup h1 {
-            color: #fff;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        /* Celebration Lights */
-        .lights {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .light {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            animation: flash 1s infinite alternate;
-        }
-
-        .light:nth-child(1) { background-color: #ff5722; animation-delay: 0.1s; }
-        .light:nth-child(2) { background-color: #ffeb3b; animation-delay: 0.3s; }
-        .light:nth-child(3) { background-color: #4caf50; animation-delay: 0.5s; }
-        .light:nth-child(4) { background-color: #00bcd4; animation-delay: 0.7s; }
-        .light:nth-child(5) { background-color: #e91e63; animation-delay: 0.9s; }
-
-        @keyframes flash {
-            from { opacity: 0.3; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px currentColor; }
-        }
-
-        .video-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #00bcd4;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 25px;
-            transition: background 0.3s;
-        }
-
-        .video-btn:hover {
-            background-color: #008ba3;
-        }
-
-        .error-message {
-            color: #ff5252;
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-        }
-    </style>
+    @keyframes flash {
+      from { opacity: 0.2; box-shadow: none; }
+      to { opacity: 1; box-shadow: 0 0 15px currentColor; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <div class="input-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required>
-            </div>
-            <button type="submit">Submit</button>
-            <div id="errorMsg" class="error-message">Invalid username or password.</div>
-        </form>
+  <div id="login-card" class="card">
+    <h2>Login</h2>
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username">
     </div>
-
-    <div class="overlay" id="popupOverlay">
-        <div class="popup">
-            <div class="lights">
-                <div class="light"></div>
-                <div class="light"></div>
-                <div class="light"></div>
-                <div class="light"></div>
-                <div class="light"></div>
-            </div>
-            <h1 id="congratsText"></h1>
-            <a href="https://www.youtube.com" target="_blank" class="video-btn">Click Here</a>
-        </div>
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password">
     </div>
+    <button onclick="handleLogin()">Log In</button>
+    <div id="login-error" class="error">Invalid username or password!</div>
+  </div>
 
-    <script>
-        // Set her birth year here (YYYY)
-        const birthYear = 2000; // Change 2000 to her actual birth year
+  <div id="age-card" class="card hidden">
+    <h2>Welcome, Cooper!</h2>
+    <div class="input-group">
+      <label for="age">What is your age?</label>
+      <input type="number" id="age" placeholder="Enter your age">
+    </div>
+    <button onclick="handleAgeSubmit()">Submit</button>
+    <div id="age-error" class="error">Please enter a valid age!</div>
+  </div>
 
-        function calculateAge(year) {
-            const today = new Date();
-            const birthDate = new Date(year, 2, 9); // Month is 0-indexed: 2 = March, 9 = Day 9
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
+  <div id="celebration-overlay" class="hidden">
+    <div class="lights">
+      <div class="light"></div>
+      <div class="light"></div>
+      <div class="light"></div>
+      <div class="light"></div>
+      <div class="light"></div>
+    </div>
+    <div class="popup">
+      <h1 id="congrats-message" style="color: #facc15; margin-bottom: 2rem;"></h1>
+      <a href="https://www.youtube.com" target="_blank" class="link-btn">Click Here</a>
+    </div>
+  </div>
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            const errorMsg = document.getElementById('errorMsg');
+  <script>
+    function handleLogin() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      const error = document.getElementById('login-error');
 
-            if (user === 'cooper' && pass === '0309') {
-                errorMsg.style.display = 'none';
-                
-                // Calculate age dynamically
-                const herAge = calculateAge(birthYear);
-                
-                // Set the exact greeting text
-                document.getElementById('congratsText').textContent = `Congratulations you are happily ${herAge} 🎉`;
-                
-                document.getElementById('popupOverlay').style.display = 'flex';
-            } else {
-                errorMsg.style.display = 'block';
-            }
-        });
-    </script>
+      if (user === 'cooper' && pass === '0309') {
+        error.style.display = 'none';
+        document.getElementById('login-card').classList.add('hidden');
+        document.getElementById('age-card').classList.remove('hidden');
+      } else {
+        error.style.display = 'block';
+      }
+    }
+
+    function handleAgeSubmit() {
+      const age = document.getElementById('age').value;
+      const error = document.getElementById('age-error');
+
+      if (age && age > 0) {
+        error.style.display = 'none';
+        document.getElementById('age-card').classList.add('hidden');
+        
+        const message = `Congratulations you are happily ${age}!`;
+        document.getElementById('congrats-message').innerText = message;
+        
+        document.getElementById('celebration-overlay').classList.remove('hidden');
+      } else {
+        error.style.display = 'block';
+      }
+    }
+  </script>
 </body>
 </html>
