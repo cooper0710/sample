@@ -24,7 +24,7 @@
       overflow-x: hidden;
     }
 
-    /* Card Styling */
+    /* Base Card Styling */
     .card {
       background: rgba(5, 10, 24, 0.88);
       backdrop-filter: blur(12px);
@@ -32,9 +32,10 @@
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 35px rgba(0, 150, 255, 0.25);
-      max-width: 550px;
+      max-width: 600px;
       width: 90%;
       margin: 20px;
+      transition: all 0.5s ease-in-out;
     }
 
     .hidden {
@@ -80,6 +81,7 @@
       box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
     }
 
+    /* Regular Buttons */
     .btn {
       width: 100%;
       background: linear-gradient(135deg, #1e3c72, #2a5298);
@@ -107,7 +109,7 @@
       margin-top: 10px;
     }
 
-    /* Rocket Section */
+    /* Rocket Icon */
     .rocket-icon {
       font-size: 3.5rem;
       margin-bottom: 10px;
@@ -119,7 +121,7 @@
       50% { transform: translateY(-10px); }
     }
 
-    /* Main Content & Morse */
+    /* Text & Morse Code */
     .age-text {
       font-size: 1.4rem;
       color: #64ffda;
@@ -153,7 +155,7 @@
       text-shadow: 0 0 10px rgba(255, 230, 0, 0.4);
     }
 
-    /* Wish Page */
+    /* Birthday Wish Styling */
     .wish-title {
       font-size: 2.2rem;
       margin-bottom: 20px;
@@ -166,6 +168,87 @@
       line-height: 1.8;
       color: #e2e8f0;
       text-align: justify;
+      margin-bottom: 25px;
+    }
+
+    /* Black Hole Push Button */
+    .blackhole-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .blackhole-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #000;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 0 20px 8px rgba(0, 0, 0, 0.9), 
+                  0 0 15px 3px rgba(255, 170, 0, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .blackhole-btn::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: #ffaa00;
+      border-bottom-color: #ff3300;
+      animation: spin 4s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .blackhole-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 30px 12px rgba(0, 0, 0, 1), 
+                  0 0 25px 8px rgba(255, 170, 0, 0.8);
+    }
+
+    .blackhole-btn:active {
+      transform: scale(0.95);
+    }
+
+    .blackhole-text {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Photo Display inside same card */
+    .photo-container {
+      margin-top: 25px;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    .photo-display {
+      width: 100%;
+      max-height: 450px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 25px rgba(100, 255, 218, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -210,10 +293,20 @@
     <p class="wish-body">
       Across the vast cosmos of time and space, very few stars shine as brightly as you do. As you turn another year wiser today, may your journey through life continue to be filled with breathtaking discoveries, endless joy, and quiet moments of profound wonder. No matter how many light-years or obstacles lie ahead, remember that you are capable of navigating through any storm the universe throws your way. May this brand-new chapter bring you love that transcends boundaries, dreams that touch the stars, and memories that shine forever. Happy Birthday, and keep shining brightly!
     </p>
+
+    <div class="blackhole-container">
+      <button id="blackhole-btn" class="blackhole-btn" onclick="revealPhoto()">
+        <span class="blackhole-text">PUSH</span>
+      </button>
+    </div>
+
+    <div id="photo-container" class="photo-container hidden">
+      <img src="your_photo.jpg" alt="Special Memory" class="photo-display">
+    </div>
   </div>
 
   <script>
-    // Handle Professional Login
+    // Handle Login Validation
     function handleLogin() {
       const u = document.getElementById("username").value;
       const p = document.getElementById("password").value;
@@ -228,7 +321,7 @@
       }
     }
 
-    // Handle Rocket Age Submission
+    // Handle Age Input Validation
     function handleAgeSubmit() {
       const age = document.getElementById("age-input").value;
       const ageError = document.getElementById("age-error");
@@ -245,10 +338,16 @@
       }
     }
 
-    // Show Final Birthday Wish
+    // Navigation to Wish Page
     function showWishPage() {
       document.getElementById("main-content").classList.add("hidden");
       document.getElementById("wish-page").classList.remove("hidden");
+    }
+
+    // Reveal Photo in the Same Page
+    function revealPhoto() {
+      document.getElementById("photo-container").classList.remove("hidden");
+      document.getElementById("blackhole-btn").style.display = "none";
     }
   </script>
 
