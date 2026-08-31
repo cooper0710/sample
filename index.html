@@ -3,358 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login & Celebration</title>
+  <title>A Special Surprise</title>
   <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #ec4899;
-      --accent-hover: #db2777;
-      --text: #f8fafc;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: #000 url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
       min-height: 100vh;
-      overflow: hidden;
-    }
-
-    .card {
-      background: var(--card-bg);
-      padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      z-index: 10;
+      overflow-x: hidden;
     }
 
-    h2 {
-      margin-bottom: 1.5rem;
-      color: var(--text);
+    #main-content, #wish-page {
+      display: none;
+      background: rgba(5, 10, 24, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 30px rgba(0, 150, 255, 0.2);
+      max-width: 650px;
+      width: 90%;
+      margin: 20px;
     }
 
-    .input-group {
-      margin-bottom: 1.2rem;
-      text-align: left;
+    .age-text {
+      font-size: 1.4rem;
+      color: #64ffda;
+      margin-bottom: 25px;
+      line-height: 1.6;
     }
 
-    label {
-      display: block;
-      margin-bottom: 0.4rem;
-      font-size: 0.9rem;
-      color: #94a3b8;
+    .morse-title {
+      font-size: 1rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #a0aec0;
+      margin-bottom: 10px;
     }
 
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      background: #0f172a;
+    .morse-code {
+      font-family: monospace;
+      font-size: 3.5rem;
+      letter-spacing: 12px;
+      color: #ffffff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(0, 183, 255, 0.6);
+      margin: 20px 0 35px 0;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
       color: #fff;
-      box-sizing: border-box;
-      font-size: 1rem;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    button, .video-btn {
-      width: 100%;
-      padding: 0.75rem;
       border: none;
-      border-radius: 8px;
-      background-color: var(--accent);
-      color: white;
-      font-size: 1rem;
-      font-weight: bold;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 30px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
       text-decoration: none;
       display: inline-block;
-      box-sizing: border-box;
-      margin-top: 0.5rem;
     }
 
-    button:hover, .video-btn:hover {
-      background-color: var(--accent-hover);
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(42, 82, 152, 0.6);
+      background: linear-gradient(135deg, #2a5298, #1e3c72);
     }
 
-    .error {
-      color: #f87171;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-      display: none;
+    .wish-title {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      color: #ffe600;
+      text-shadow: 0 0 10px rgba(255, 230, 0, 0.4);
     }
 
-    /* Modal / Pop-up Styling */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-content {
-      background: var(--card-bg);
-      padding: 2.5rem;
-      border-radius: 16px;
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
-      position: relative;
-      animation: popIn 0.4s ease;
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.8); }
-      to { transform: scale(1); }
-    }
-
-    /* Celebration Lights Effect */
-    .lights {
-      position: absolute;
-      top: -10px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-    }
-
-    .light {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      animation: flash 0.8s infinite alternate;
-    }
-
-    .light:nth-child(1) { background: #ff0055; animation-delay: 0.1s; }
-    .light:nth-child(2) { background: #00ffcc; animation-delay: 0.3s; }
-    .light:nth-child(3) { background: #ffcc00; animation-delay: 0.2s; }
-    .light:nth-child(4) { background: #ff00ff; animation-delay: 0.4s; }
-    .light:nth-child(5) { background: #00ff00; animation-delay: 0.15s; }
-
-    @keyframes flash {
-      from { opacity: 0.3; box-shadow: none; }
-      to { opacity: 1; box-shadow: 0 0 10px currentColor; }
-    }
-
-    /* Message Display Card */
-    .message-card {
-      background: var(--card-bg);
-      padding: 3rem 2rem;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
-      width: 90%;
-      max-width: 500px;
-      text-align: left;
-      z-index: 10;
-    }
-
-    .message-container {
-      font-size: 1.2rem;
+    .wish-body {
+      font-size: 1.1rem;
       line-height: 1.8;
-      min-height: 200px;
-      color: #f8fafc;
-    }
-
-    .message-line {
-      margin-bottom: 1rem;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .message-line.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .cursor {
-      display: inline-block;
-      width: 8px;
-      height: 1.2rem;
-      background-color: var(--accent);
-      margin-left: 4px;
-      animation: blink 0.7s infinite;
-      vertical-align: middle;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    .hidden {
-      display: none !important;
+      color: #e2e8f0;
+      text-align: justify;
     }
   </style>
 </head>
 <body>
 
-  <div id="loginCard" class="card">
-    <h2>Login</h2>
-    <div class="input-group">
-      <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Enter username">
-    </div>
-    <div class="input-group">
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter password">
-    </div>
-    <button onclick="handleLogin()">Sign In</button>
-    <div id="loginError" class="error">Invalid username or password.</div>
+  <div id="main-content">
+    <p class="age-text" id="greeting-display"></p>
+    <div class="morse-title">Transmission Received</div>
+    <div class="morse-code">···  -  ·-  -·--</div>
+    <button class="btn" onclick="showWishPage()">Click Here</button>
   </div>
 
-  <div id="ageCard" class="card hidden">
-    <h2>Security Question</h2>
-    <div class="input-group">
-      <label for="ageInput">What's her age?</label>
-      <input type="number" id="ageInput" placeholder="Enter her age">
-    </div>
-    <button onclick="handleAgeSubmit()">Submit</button>
-    <div id="ageError" class="error">Please enter a valid age.</div>
-  </div>
-
-  <div id="celebrationModal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="lights">
-        <div class="light"></div>
-        <div class="light"></div>
-        <div class="light"></div>
-        <div class="light"></div>
-        <div class="light"></div>
-      </div>
-      <h1 style="color: #ec4899; margin-top: 10px;">🎉 Congratulations! 🎉</h1>
-      <p id="celebrationText" style="font-size: 1.2rem; line-height: 1.5; margin: 1.5rem 0;"></p>
-      
-      <button onclick="openSpecialMessage()" class="video-btn">Click Here</button>
-    </div>
-  </div>
-
-  <div id="messageCard" class="message-card hidden">
-    <div id="messageContainer" class="message-container"></div>
+  <div id="wish-page">
+    <h1 class="wish-title">Happy Birthday! ✨</h1>
+    <p class="wish-body">
+      Across the vast cosmos of time and space, very few stars shine as brightly as you do. As you turn another year wiser today, may your journey through life continue to be filled with breathtaking discoveries, endless joy, and quiet moments of profound wonder. No matter how many light-years or obstacles lie ahead, remember that you are capable of navigating through any storm the universe throws your way. May this brand-new chapter bring you love that transcends boundaries, dreams that touch the stars, and memories that shine forever. Happy Birthday, and keep shining brightly!
+    </p>
   </div>
 
   <script>
-    // EDIT YOUR CUSTOM LINES HERE:
-    const messages = [
-      "To the most special person...",
-      "Every single moment with you is a blessing.",
-      "Thank you for bringing so much light into my world.",
-      "Here's to celebrating you today and always. ❤️"
-    ];
+    window.onload = function() {
+      // Step 1: Login Authentication
+      let username = prompt("Enter Username:");
+      let password = prompt("Enter Password:");
 
-    function handleLogin() {
-      const usernameInput = document.getElementById('username').value.trim();
-      const passwordInput = document.getElementById('password').value.trim();
-      const loginError = document.getElementById('loginError');
-
-      if (usernameInput === 'cooper' && passwordInput === '0309') {
-        loginError.style.display = 'none';
-        document.getElementById('loginCard').classList.add('hidden');
-        document.getElementById('ageCard').classList.remove('hidden');
-      } else {
-        loginError.style.display = 'block';
-      }
-    }
-
-    function handleAgeSubmit() {
-      const ageVal = document.getElementById('ageInput').value.trim();
-      const ageError = document.getElementById('ageError');
-
-      if (ageVal !== '' && !isNaN(ageVal) && Number(ageVal) > 0) {
-        ageError.style.display = 'none';
+      if (username === "cooper" && password === "0309") {
+        // Step 2: Age Prompt
+        let age = prompt("Please enter your age (2-digit number):");
         
-        const celebrationText = document.getElementById('celebrationText');
-        celebrationText.textContent = `You are happily ${ageVal}!`;
-
-        document.getElementById('celebrationModal').classList.add('active');
-      } else {
-        ageError.style.display = 'block';
-      }
-    }
-
-    function openSpecialMessage() {
-      // Hide the modal & age card
-      document.getElementById('celebrationModal').classList.remove('active');
-      document.getElementById('ageCard').classList.add('hidden');
-      
-      // Reveal the message card
-      const messageCard = document.getElementById('messageCard');
-      messageCard.classList.remove('hidden');
-
-      // Start the line-by-line typing animation
-      displayMessagesLineByLine(messages);
-    }
-
-    function displayMessagesLineByLine(lines) {
-      const container = document.getElementById('messageContainer');
-      container.innerHTML = ''; 
-
-      let currentLineIndex = 0;
-
-      function typeLine() {
-        if (currentLineIndex >= lines.length) return;
-
-        const lineText = lines[currentLineIndex];
-        const lineElement = document.createElement('div');
-        lineElement.className = 'message-line visible';
-        
-        const textSpan = document.createElement('span');
-        const cursorSpan = document.createElement('span');
-        cursorSpan.className = 'cursor';
-
-        lineElement.appendChild(textSpan);
-        lineElement.appendChild(cursorSpan);
-        container.appendChild(lineElement);
-
-        let charIndex = 0;
-
-        function typeChar() {
-          if (charIndex < lineText.length) {
-            textSpan.textContent += lineText.charAt(charIndex);
-            charIndex++;
-            setTimeout(typeChar, 50); // Speed of character typing (ms)
-          } else {
-            // Remove cursor from finished line
-            cursorSpan.remove();
-            currentLineIndex++;
-            setTimeout(typeLine, 800); // Pause time before starting the next line (ms)
-          }
+        while (!age || age.length !== 2 || isNaN(age)) {
+          age = prompt("Invalid input. Please enter a valid 2-digit age:");
         }
 
-        typeChar();
-      }
+        // Display personalized text and reveal main page
+        document.getElementById("greeting-display").innerText = 
+          `Congratulations, you are happily ${age}!`;
+        document.getElementById("main-content").style.display = "block";
 
-      typeLine();
+      } else {
+        alert("Access Denied: Incorrect Username or Password.");
+        window.location.reload();
+      }
+    };
+
+    // Transition to the final birthday wish page
+    function showWishPage() {
+      document.getElementById("main-content").style.display = "none";
+      document.getElementById("wish-page").style.display = "block";
     }
   </script>
+
 </body>
 </html>
