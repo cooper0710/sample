@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Special Surprise</title>
+  <title>Mission Control</title>
   <style>
     * {
       box-sizing: border-box;
@@ -18,26 +18,108 @@
       color: #ffffff;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       overflow-x: hidden;
     }
 
-    #main-content, #wish-page {
-      display: none;
-      background: rgba(5, 10, 24, 0.85);
-      backdrop-filter: blur(8px);
+    /* Card Styling */
+    .card {
+      background: rgba(5, 10, 24, 0.88);
+      backdrop-filter: blur(12px);
       padding: 40px;
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 30px rgba(0, 150, 255, 0.2);
-      max-width: 650px;
+      box-shadow: 0 0 35px rgba(0, 150, 255, 0.25);
+      max-width: 550px;
       width: 90%;
       margin: 20px;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
+    /* Forms & Inputs */
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      color: #ffffff;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: #a0aec0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.07);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      border-color: #64ffda;
+      box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(42, 82, 152, 0.6);
+      background: linear-gradient(135deg, #2a5298, #1e3c72);
+    }
+
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    /* Rocket Section */
+    .rocket-icon {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Main Content & Morse */
     .age-text {
       font-size: 1.4rem;
       color: #64ffda;
@@ -55,34 +137,23 @@
 
     .morse-code {
       font-family: monospace;
-      font-size: 3.5rem;
+      font-size: 3rem;
       letter-spacing: 12px;
       color: #ffffff;
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(0, 183, 255, 0.6);
-      margin: 20px 0 35px 0;
+      margin: 15px 0 5px 0;
     }
 
-    .btn {
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #fff;
-      border: none;
-      padding: 14px 32px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-      text-decoration: none;
-      display: inline-block;
+    .morse-translation {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #ffe600;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(255, 230, 0, 0.4);
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(42, 82, 152, 0.6);
-      background: linear-gradient(135deg, #2a5298, #1e3c72);
-    }
-
+    /* Wish Page */
     .wish-title {
       font-size: 2.2rem;
       margin-bottom: 20px;
@@ -100,14 +171,41 @@
 </head>
 <body>
 
-  <div id="main-content">
+  <div id="login-card" class="card">
+    <h2>Mission Login</h2>
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username">
+    </div>
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password">
+    </div>
+    <button class="btn" onclick="handleLogin()">Login</button>
+    <div id="login-error" class="error-msg hidden">Invalid username or password.</div>
+  </div>
+
+  <div id="age-card" class="card hidden">
+    <div class="rocket-icon">🚀</div>
+    <h2>Boarding Pass</h2>
+    <p style="color: #a0aec0; margin-bottom: 20px;">Enter your age to launch the sequence:</p>
+    <div class="input-group">
+      <label for="age-input">Age (2 Digits)</label>
+      <input type="text" id="age-input" maxlength="2" placeholder="e.g. 24">
+    </div>
+    <button class="btn" onclick="handleAgeSubmit()">Launch Sequence</button>
+    <div id="age-error" class="error-msg hidden">Please enter a valid 2-digit number.</div>
+  </div>
+
+  <div id="main-content" class="card hidden">
     <p class="age-text" id="greeting-display"></p>
     <div class="morse-title">Transmission Received</div>
     <div class="morse-code">···  -  ·-  -·--</div>
+    <div class="morse-translation">( S T A Y )</div>
     <button class="btn" onclick="showWishPage()">Click Here</button>
   </div>
 
-  <div id="wish-page">
+  <div id="wish-page" class="card hidden">
     <h1 class="wish-title">Happy Birthday! ✨</h1>
     <p class="wish-body">
       Across the vast cosmos of time and space, very few stars shine as brightly as you do. As you turn another year wiser today, may your journey through life continue to be filled with breathtaking discoveries, endless joy, and quiet moments of profound wonder. No matter how many light-years or obstacles lie ahead, remember that you are capable of navigating through any storm the universe throws your way. May this brand-new chapter bring you love that transcends boundaries, dreams that touch the stars, and memories that shine forever. Happy Birthday, and keep shining brightly!
@@ -115,34 +213,42 @@
   </div>
 
   <script>
-    window.onload = function() {
-      // Step 1: Login Authentication
-      let username = prompt("Enter Username:");
-      let password = prompt("Enter Password:");
+    // Handle Professional Login
+    function handleLogin() {
+      const u = document.getElementById("username").value;
+      const p = document.getElementById("password").value;
+      const errorMsg = document.getElementById("login-error");
 
-      if (username === "cooper" && password === "0309") {
-        // Step 2: Age Prompt
-        let age = prompt("Please enter your age (2-digit number):");
+      if (u === "cooper" && p === "0309") {
+        errorMsg.classList.add("hidden");
+        document.getElementById("login-card").classList.add("hidden");
+        document.getElementById("age-card").classList.remove("hidden");
+      } else {
+        errorMsg.classList.remove("hidden");
+      }
+    }
+
+    // Handle Rocket Age Submission
+    function handleAgeSubmit() {
+      const age = document.getElementById("age-input").value;
+      const ageError = document.getElementById("age-error");
+
+      if (/^\d{2}$/.test(age)) {
+        ageError.classList.add("hidden");
+        document.getElementById("age-card").classList.add("hidden");
         
-        while (!age || age.length !== 2 || isNaN(age)) {
-          age = prompt("Invalid input. Please enter a valid 2-digit age:");
-        }
-
-        // Display personalized text and reveal main page
         document.getElementById("greeting-display").innerText = 
           `Congratulations, you are happily ${age}!`;
-        document.getElementById("main-content").style.display = "block";
-
+        document.getElementById("main-content").classList.remove("hidden");
       } else {
-        alert("Access Denied: Incorrect Username or Password.");
-        window.location.reload();
+        ageError.classList.remove("hidden");
       }
-    };
+    }
 
-    // Transition to the final birthday wish page
+    // Show Final Birthday Wish
     function showWishPage() {
-      document.getElementById("main-content").style.display = "none";
-      document.getElementById("wish-page").style.display = "block";
+      document.getElementById("main-content").classList.add("hidden");
+      document.getElementById("wish-page").classList.remove("hidden");
     }
   </script>
 
